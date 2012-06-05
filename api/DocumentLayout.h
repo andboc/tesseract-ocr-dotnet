@@ -20,6 +20,7 @@ limitations under the License.
 #include "RecognitionItem.h"
 #include "Block.h"
 
+
 BEGIN_NAMSPACE
 
 USING_COMMON_SYSTEM
@@ -32,6 +33,7 @@ public:
 
 protected:
 	List<Block*>* _blocks;
+	float Confidence;
 
 public:
 	__property List<Block*>* get_Blocks()
@@ -70,5 +72,4 @@ protected:
 		return true;
 	}
 };
-
 END_NAMESPACE

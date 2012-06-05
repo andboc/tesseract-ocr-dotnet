@@ -21,7 +21,9 @@ limitations under the License.
 #include "RectBound.h"
 #include "..\ccstruct\publictypes.h"
 #include "pageiterator.h"
+#include "resultiterator.h"
 #include "Helper.h"
+
 
 
 BEGIN_NAMSPACE
@@ -53,6 +55,8 @@ public:
 	{
 		Confidence = confidence;
 	}
+	
+	String *Text;
 
 protected:
 	Color _color;
@@ -103,6 +107,7 @@ public:
 	virtual void CollectResult(PageIterator* pageIterator)
 	{
 		int left = 0, top = 0, right = 0, bottom = 0;
+
 		RecognitionItem* child = this->CreateChild();
 		if (child == null) // it is lowest level
 		{			
@@ -140,8 +145,43 @@ public:
 			}
 		}
 	}
-};
+	virtual void CollectResult(ResultIterator* resultIterator)
+	{
+          PageIteratorLevel curLevel = this->GetPageIteratorLevel();
 
+            // recongnized confidence
+            this->Confidence = 0.01 * resultIterator->Confidence(curLevel);
+			this->Text = resultIterator->GetUTF8Text(curLevel);
+
+            RecognitionItem *child = this->CreateChild();
+            if (child == null) // it is lowest level
+                return;
+            
+            PageIteratorLevel nextLevel = this->GetNextPageIteratorLevel();
+            
+            if (resultIterator->IsAtBeginningOf(nextLevel))
+            {
+                // get the first item
+                child->CollectResult(resultIterator);
+                this->AddItem(child);
+
+                if (resultIterator->IsAtFinalElement(curLevel, nextLevel))
+                    return;
+
+                // get remaining items
+                while (resultIterator->Next(nextLevel))
+                {
+                    child = this->CreateChild();
+                    child->CollectResult(resultIterator);
+                    this->AddItem(child);
+
+                    if (resultIterator->IsAtFinalElement(curLevel, nextLevel))
+                        break;
+                }
+            }
+        }	
+
+};
 
 
 END_NAMESPACE

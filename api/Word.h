@@ -41,7 +41,7 @@ public:
 	int FontIndex, PointSize, Formating;
 
 	// The text
-	String* Text;
+	//String* Text;
 	
 	// Character position
 	List<Character*>* CharList;

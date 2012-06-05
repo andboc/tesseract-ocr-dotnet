@@ -207,5 +207,36 @@ String* TesseractProcessor::Process(TessBaseAPI* api, Pix* pix)
 	
 	return result;
 }
+DocumentLayout* TesseractProcessor::RecognizeAndRetrieveDetail(System::Drawing::Image* image)
+{
+	if (_apiInstance == null || image == null)
+		return null;
+	DocumentLayout* doc = new DocumentLayout();	
+	String* result = "";
+	Pix* pix = null;
 
+
+	try
+	{
+		pix = PixConverter::PixFromImage(image);
+		result = this->Process(this->EngineAPI, pix);
+		ResultIterator* resIt=this->EngineAPI->GetIterator();
+		doc->CollectResult(resIt);
+	}
+	catch (System::Exception* exp)
+	{
+		throw exp;
+	}
+	__finally
+	{
+		if (pix != null)
+		{
+			pixDestroy(&pix);
+			pix = null;
+		}
+	}
+
+	return doc;
+
+}
 END_NAMESPACE

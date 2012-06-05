@@ -164,6 +164,11 @@ public:
 	//
 	String* RecognizeGreyImage(unsigned short* greyData, int width, int height);
 
+	//
+	// Recognize text from image and collect details
+	//
+	DocumentLayout* TesseractProcessor::RecognizeAndRetrieveDetail(System::Drawing::Image* image);
+
 	
 
 
