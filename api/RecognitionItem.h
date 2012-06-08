@@ -151,7 +151,8 @@ public:
 
             // recongnized confidence
             this->Confidence = 0.01 * resultIterator->Confidence(curLevel);
-			this->Text = resultIterator->GetUTF8Text(curLevel);
+			char* text = resultIterator->GetUTF8Text(curLevel);
+			this->Text= new String(text, 0, strlen(text), Encoding::UTF8);			
 
             RecognitionItem *child = this->CreateChild();
             if (child == null) // it is lowest level
